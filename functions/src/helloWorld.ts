@@ -1,6 +1,3 @@
-// export * from "./helloWorld";
-// export * from "./stripe_payment_intent";
-
 /**
  * Import function triggers from their respective submodules:
  *
@@ -13,7 +10,10 @@
 import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
+// Start writing functions
+// https://firebase.google.com/docs/functions/typescript
+
 export const helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", { structuredData: true });
-  response.send({ data: "Hello from Firebase!" });
+  response.send("Hello from Firebase!");
 });
