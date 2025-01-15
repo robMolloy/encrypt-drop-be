@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-// import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const emulatorProjectId = "demo-project";
 const firebaseConfig = {
