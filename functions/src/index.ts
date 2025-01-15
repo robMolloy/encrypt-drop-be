@@ -1,2 +1,2 @@
 export * from "./helloWorld";
-export * from "./stripePaymentIntent";
+export * from "./createStripePaymentIntent";
