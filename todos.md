@@ -1,1 +1,1 @@
-setup firebase cloud functions testing
+setup testing for cloud function + firestore

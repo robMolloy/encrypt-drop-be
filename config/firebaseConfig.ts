@@ -3,8 +3,17 @@ import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
+const useEmulator = true;
 const emulatorProjectId = "demo-project";
-const firebaseConfig = {
+export const initFirebaseConfig = {
+  apiKey: "AIzaSyCewPJhmBtpn6QWXhx2MRrtY7UxaOZfOW4",
+  authDomain: "encryptdrop.firebaseapp.com",
+  projectId: "encryptdrop",
+  storageBucket: "encryptdrop.firebasestorage.app",
+  messagingSenderId: "352557738491",
+  appId: "1:352557738491:web:6cf71ea7f33e25475a835e",
+};
+export const emulatorFirebaseConfig = {
   projectId: emulatorProjectId,
   apiKey: emulatorProjectId,
   authDomain: emulatorProjectId,
@@ -13,6 +22,9 @@ const firebaseConfig = {
   appId: emulatorProjectId,
 };
 
+export const firebaseConfig = useEmulator
+  ? emulatorFirebaseConfig
+  : initFirebaseConfig;
 export const app = initializeApp(firebaseConfig);
 
 // export const auth = getAuth(app);

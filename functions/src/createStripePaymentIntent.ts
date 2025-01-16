@@ -14,7 +14,7 @@ const requestDataSchema = z.object({
   currency: z.string(),
 });
 
-exports.createPaymentIntent = onCall(async (initRequest) => {
+export const createStripePaymentIntent = onCall(async (initRequest) => {
   try {
     const data = initRequest.data;
     console.log(`stripePaymentIntent.ts:${/*LL*/ 19}`, { data });
