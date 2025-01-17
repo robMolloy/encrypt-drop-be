@@ -130,7 +130,7 @@ service cloud.firestore {
     
     match /paymentIntents/{id} {
       function getPaymentIntentKeys(){
-        return ['id', 'createdAt', 'updatedAt'];
+        return ['id', 'uid', 'createdAt', 'updatedAt'];
       }
       function checkPaymentIntentDataTypes(){
         let incoming = getIncomingData();
@@ -148,8 +148,8 @@ service cloud.firestore {
         let auth = getIncomingAuth();
         
         return checkPaymentIntentDataTypes()
-          && auth != null
           && incoming.id == incomingId
+          && incoming.uid == auth.uid
           && isNow(incoming.createdAt)
           && isNow(incoming.updatedAt)
       }
