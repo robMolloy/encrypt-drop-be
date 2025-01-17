@@ -1,67 +1,13 @@
 import admin from "firebase-admin";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import z from "zod";
-import { Timestamp } from "firebase-admin/firestore";
+import {
+  adminGetBalanceByUid,
+  adminSetBalance,
+  adminSetProcessedPaymentFromPaymentIntent,
+  paymentIntentDocSchema,
+} from "./adminFirestoreSdk/adminFirestoreSdk";
 
 admin.initializeApp();
-
-type TTimestamp = ReturnType<typeof Timestamp.now>;
-type TTimestampValue = Pick<TTimestamp, "seconds" | "nanoseconds">;
-
-const getTimestampFromTimestampValue = (x: TTimestampValue) => {
-  return new Timestamp(x.seconds, x.nanoseconds);
-};
-
-const timestampSchema = z
-  .object({ seconds: z.number(), nanoseconds: z.number() })
-  .transform((x) => getTimestampFromTimestampValue(x));
-
-export const paymentIntentDocSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});
-
-export const balanceSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  couponStream: z.number(),
-  numberOfCoupons: z.number(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});
-
-export const adminGetBalanceByUid = async (p: {
-  admin: typeof admin;
-  uid: string;
-}) => {
-  try {
-    const initBalance = await admin
-      .firestore()
-      .collection("balances")
-      .doc(p.uid)
-      .get();
-    //
-
-    const balanceResponse = balanceSchema.safeParse(initBalance.data());
-    return balanceResponse;
-  } catch (error) {
-    return { success: false } as const;
-  }
-};
-
-const adminSetBalance = async (p: {
-  admin: typeof admin;
-  data: z.infer<typeof balanceSchema>;
-}) => {
-  try {
-    await admin.firestore().collection("balances").doc(p.data.id).set(p.data);
-    return { success: true } as const;
-  } catch (error) {
-    return { success: false } as const;
-  }
-};
 
 export const onCreatePaymentIntent = onDocumentCreated(
   "paymentIntents/{id}",
@@ -76,14 +22,10 @@ export const onCreatePaymentIntent = onDocumentCreated(
 
     try {
       // Example: Write to another Firestore collection
-      await admin
-        .firestore()
-        .collection("processedPayments")
-        .doc(docId)
-        .set({
-          ...newDocData, // Copy the original data
-          processedAt: admin.firestore.FieldValue.serverTimestamp(), // Add a timestamp
-        });
+      await adminSetProcessedPaymentFromPaymentIntent({
+        admin,
+        data: paymentIntentParseResponse.data,
+      });
 
       const balanceResponse = await adminGetBalanceByUid({
         admin,
