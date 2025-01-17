@@ -1,7 +1,5 @@
-import { onRequest } from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+import { onCall } from "firebase-functions/v2/https";
 
-export const helloWorld = onRequest((request, response) => {
-  logger.info("Hello logs!", { structuredData: true });
-  response.send({ data: "Hello from Firebase!" });
+export const helloWorld = onCall(() => {
+  return { success: true, data: "Hello from Firebase!" };
 });
