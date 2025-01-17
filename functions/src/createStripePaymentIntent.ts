@@ -17,7 +17,6 @@ const requestDataSchema = z.object({
 export const createStripePaymentIntent = onCall(async (initRequest) => {
   try {
     const data = initRequest.data;
-    console.log(`stripePaymentIntent.ts:${/*LL*/ 19}`, { data });
     const requestParseResponse = requestDataSchema.safeParse(data);
 
     if (!requestParseResponse.success)
