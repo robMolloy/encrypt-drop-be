@@ -6,7 +6,7 @@ const isPaymentIntentStatusSucceededFn = httpsCallable(
   functions,
   "isPaymentIntentStatusSucceeded"
 );
-const responseSchema = z.object({
+const successResponseSchema = z.object({
   data: z.object({ success: z.literal(true) }),
 });
 
@@ -14,6 +14,6 @@ export const isPaymentIntentStatusSucceeded = async (p: {
   paymentIntentId: string;
 }) => {
   const response = await isPaymentIntentStatusSucceededFn(p);
-  const parsedResponse = responseSchema.safeParse(response);
+  const parsedResponse = successResponseSchema.safeParse(response);
   return { success: parsedResponse.success } as const;
 };

@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const helloWorldFn = httpsCallable(functions, "helloWorld");
 
-const responseSchema = z.object({
+const successResponseSchema = z.object({
   data: z.object({
     success: z.literal(true),
     data: z.string(),
@@ -13,7 +13,7 @@ const responseSchema = z.object({
 
 export const helloWorld = async () => {
   const response = await helloWorldFn();
-  const parsedResponse = responseSchema.safeParse(response);
+  const parsedResponse = successResponseSchema.safeParse(response);
 
   if (!parsedResponse.success) return { success: false } as const;
   return {

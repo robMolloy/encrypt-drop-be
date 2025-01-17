@@ -7,7 +7,7 @@ const createStripePaymentIntentFn = httpsCallable(
   "createStripePaymentIntent"
 );
 
-const responseSchema = z.object({
+const successResponseSchema = z.object({
   data: z.object({
     success: z.literal(true),
     data: z.object({ client_secret: z.string() }),
@@ -19,7 +19,7 @@ export const createStripePaymentIntent = async (p: {
   currency: string;
 }) => {
   const response = await createStripePaymentIntentFn(p);
-  const parsedResponse = responseSchema.safeParse(response);
+  const parsedResponse = successResponseSchema.safeParse(response);
 
   if (!parsedResponse.success) return { success: false } as const;
   return {
