@@ -8,8 +8,10 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
+    "skipLibCheck": true,
     "target": "es2017"
   },
   "compileOnSave": true,
-  "include": ["functions/src"]
+  "include": ["functions/src"],
+  "exclude": ["functions/node_modules"]
 }
