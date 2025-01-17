@@ -1,8 +1,8 @@
 // import * as admin from "firebase-admin";
 // admin.initializeApp();
 
+import { onCall } from "firebase-functions/v2/https";
 import { Stripe } from "stripe";
-import { onCall, HttpsError } from "firebase-functions/v2/https";
 import z from "zod";
 
 const stripeSecretKey =
@@ -19,11 +19,11 @@ export const createStripePaymentIntent = onCall(async (initRequest) => {
     const data = initRequest.data;
     const requestParseResponse = requestDataSchema.safeParse(data);
 
-    if (!requestParseResponse.success)
-      throw new HttpsError(
-        "invalid-argument",
-        "The function must be called with 'amount' and 'currency' arguments."
-      );
+    if (!requestParseResponse.success) {
+      const errorMessage =
+        "The function must be called with 'amount' and 'currency' arguments.";
+      return { success: false, error: { message: errorMessage } };
+    }
 
     const amount = requestParseResponse.data.amount;
     const currency = requestParseResponse.data.currency;
@@ -33,11 +33,9 @@ export const createStripePaymentIntent = onCall(async (initRequest) => {
       currency,
     });
 
-    // Return the client secret to the client
-    return { clientSecret: paymentIntent.client_secret };
+    return { success: true, data: paymentIntent };
   } catch (e) {
     const error = e as { message: string };
-    console.error("Error creating payment intent:", error);
-    throw new HttpsError("internal", error.message);
+    return { success: false, error };
   }
 });
