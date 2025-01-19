@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "tsc": "tsc --noemit --watch",
+    "list-functions": "node scripts/script.js \"$(firebase functions:list --json)\"",
     "firebase:login": "node_modules/.bin/firebase login",
     "firebase:init": "node_modules/.bin/firebase init",
     "functions:build": "cd functions && npm run build:watch",

@@ -37,12 +37,11 @@ export const adminGetBalanceByUid = async (p: {
   uid: string;
 }) => {
   try {
-    const initBalance = await admin
+    const initBalance = await p.admin
       .firestore()
       .collection("balances")
       .doc(p.uid)
       .get();
-    //
 
     const balanceResponse = balanceSchema.safeParse(initBalance.data());
     return balanceResponse;
@@ -56,7 +55,7 @@ export const adminSetBalance = async (p: {
   data: z.infer<typeof balanceSchema>;
 }) => {
   try {
-    await admin.firestore().collection("balances").doc(p.data.id).set(p.data);
+    await p.admin.firestore().collection("balances").doc(p.data.id).set(p.data);
     return { success: true } as const;
   } catch (error) {
     return { success: false } as const;
@@ -68,7 +67,7 @@ export const adminSetProcessedPaymentFromPaymentIntent = async (p: {
   data: z.infer<typeof paymentIntentDocSchema>;
 }) => {
   try {
-    await admin
+    await p.admin
       .firestore()
       .collection("processedPayments")
       .doc(p.data.id)
@@ -77,6 +76,47 @@ export const adminSetProcessedPaymentFromPaymentIntent = async (p: {
         processedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     return { success: true } as const;
+  } catch (error) {
+    return { success: false } as const;
+  }
+};
+
+export const adminGetProcessedPayment = async (p: {
+  admin: typeof admin;
+  id: string;
+}) => {
+  try {
+    const getProcessedPaymentResponse = await p.admin
+      .firestore()
+      .collection("processedPayments")
+      .doc(p.id)
+      .get();
+
+    const processedPaymentResponse = paymentProcessedDocSchema.safeParse(
+      getProcessedPaymentResponse.data()
+    );
+
+    return processedPaymentResponse;
+  } catch (error) {
+    return { success: false } as const;
+  }
+};
+export const adminGetPaymentIntentDoc = async (p: {
+  admin: typeof admin;
+  id: string;
+}) => {
+  try {
+    const getDocResponse = await p.admin
+      .firestore()
+      .collection("paymentIntents")
+      .doc(p.id)
+      .get();
+
+    const parsedDocResponse = paymentIntentDocSchema.safeParse(
+      getDocResponse.data()
+    );
+
+    return parsedDocResponse;
   } catch (error) {
     return { success: false } as const;
   }
