@@ -6,7 +6,7 @@ import {
   adminSetBalance,
   adminSetProcessedPaymentFromPaymentIntent,
 } from "../adminFirestoreSdk/adminFirestoreSdk";
-import { stripeRetrievePaymentIntent } from "../stripeUtils/stripeUtils";
+import { stripeSdk } from "../stripeSdk/stripeSdk";
 
 export const updateBalanceIfValidAndReceipt = async (p: {
   admin: typeof admin;
@@ -18,7 +18,7 @@ export const updateBalanceIfValidAndReceipt = async (p: {
   });
   if (!getPaymentIntentDocResponse.success) return { success: false };
 
-  const stripePaymentIntentResponse = await stripeRetrievePaymentIntent({
+  const stripePaymentIntentResponse = await stripeSdk.retrievePaymentIntent({
     paymentIntentId: p.paymentIntentId,
   });
   if (!stripePaymentIntentResponse.success) return { success: false };

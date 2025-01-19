@@ -1,10 +1,6 @@
 import { onCall } from "firebase-functions/v2/https";
-import { Stripe } from "stripe";
 import z from "zod";
-
-const stripeSecretKey =
-  "sk_test_51QhH4nIGFJRyk0RhUnRTVsXZICgwBLG5C6tiDecTJNR5MC40Skm1y3HMQt0HQA0dEdReAcEH3v2TozuJ9mlLHBQM00d3N3noeZ";
-const stripe = new Stripe(stripeSecretKey);
+import { stripeSdk } from "../stripeSdk/stripeSdk";
 
 const requestDataSchema = z.object({
   amount: z.number(),
@@ -22,12 +18,9 @@ export const createStripePaymentIntent = onCall(async (initRequest) => {
       return { success: false, error: { message: errorMessage } };
     }
 
-    const amount = requestParseResponse.data.amount;
-    const currency = requestParseResponse.data.currency;
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
+    const paymentIntent = await stripeSdk.createPaymentIntent({
+      amount: requestParseResponse.data.amount,
+      currency: requestParseResponse.data.currency,
     });
 
     return { success: true, data: paymentIntent };
