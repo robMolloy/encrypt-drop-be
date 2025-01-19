@@ -1,17 +1,14 @@
 import admin from "firebase-admin";
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import {
   adminGetBalanceByUid,
   adminGetPaymentIntentDoc,
   adminGetProcessedPayment,
   adminSetBalance,
   adminSetProcessedPaymentFromPaymentIntent,
-} from "./adminFirestoreSdk/adminFirestoreSdk";
-import { stripeRetrievePaymentIntent } from "./stripeUtils/stripeUtils";
+} from "../adminFirestoreSdk/adminFirestoreSdk";
+import { stripeRetrievePaymentIntent } from "../stripeUtils/stripeUtils";
 
-admin.initializeApp();
-
-const updateBalanceIfValidAndReceipt = async (p: {
+export const updateBalanceIfValidAndReceipt = async (p: {
   admin: typeof admin;
   paymentIntentId: string;
 }) => {
@@ -61,11 +58,3 @@ const updateBalanceIfValidAndReceipt = async (p: {
 
   return { success: setProcessedPaymentResponse.success };
 };
-
-export const onCreatePaymentIntentDocUpdateBalanceIfValidAndReceipt =
-  onDocumentCreated("paymentIntents/{id}", async (event) => {
-    return await updateBalanceIfValidAndReceipt({
-      admin,
-      paymentIntentId: event.params.id,
-    });
-  });
