@@ -5,6 +5,9 @@ function getIncomingData() {
 function getFirestoreFileData(id) {
   return firestore.get(/databases/(default)/documents/files/$(id)).data;
 }
+function getIncomingAuth() {
+  return request.auth;
+}
 
 // Craft rules based on data in your Firestore database
 // allow write: if firestore.get(
@@ -13,10 +16,23 @@ service firebase.storage {
   match /b/{bucket}/o {
     match /files/{id} {
       function canCreateFile(id){
-        return getFirestoreFileData(id).id != null
+        let firestoreFileData = getFirestoreFileData(id);
+        let auth = getIncomingAuth();
+
+        return firestoreFileData.id != null
+          && firestoreFileData.uid == auth.uid
           && request.resource.size < 50*1024*1024
       }
+      
+      function canGetFile(id){
+        let firestoreFileData = getFirestoreFileData(id);
+        let auth = getIncomingAuth();
+
+        return firestoreFileData.id != null
+          && firestoreFileData.uid == auth.uid
+      }
       allow create: if canCreateFile(id);
+      allow get: if canGetFile(id);
     }
   }
 }
