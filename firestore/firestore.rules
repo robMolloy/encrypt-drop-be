@@ -15,6 +15,9 @@ function isNow(dt) {
 function getExistingData() {
   return resource.data;
 }
+function getParams() {
+  return resource.data;
+}
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -120,10 +123,17 @@ service cloud.firestore {
 
         return existing.uid == auth.uid
       }
+
+      function canListFiles(){
+        let auth = getIncomingAuth();
+        let params = getParams();
+
+        return params.uid == auth.uid
+      }
       
       allow create: if canCreateFile();
       allow get: if canGetFile();
-      allow list: if false;
+      allow list: if canListFiles();
       allow update: if false;
       allow delete: if false;
     }

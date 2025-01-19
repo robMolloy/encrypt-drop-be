@@ -1,10 +1,9 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import z from "zod";
 
-const contextSchema = z.object({
-  auth: z.object({ uid: z.string() }),
-});
+const contextSchema = z.object({ auth: z.object({ uid: z.string() }) });
 const dataSchema = z.object({ id: z.string() });
+
 export const returnUid = onCall((initData, initContext) => {
   const contextParseResponse = contextSchema.safeParse(initContext);
   if (!contextParseResponse.success || !contextParseResponse.data.auth.uid) {
