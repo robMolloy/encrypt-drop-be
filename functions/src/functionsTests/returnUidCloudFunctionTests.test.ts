@@ -1,9 +1,7 @@
-import admin from "firebase-admin";
 import Test from "firebase-functions-test";
-import { returnUid } from "../src/returnUid";
+import { returnUid } from "../routes";
 
 const test = Test();
-admin.initializeApp();
 
 describe("returnUid cloud function rule test", () => {
   it("should test that returnUid cloud function exists", async () => {

@@ -1,6 +1,3 @@
-// import * as admin from "firebase-admin";
-// admin.initializeApp();
-
 import { onCall } from "firebase-functions/v2/https";
 import { Stripe } from "stripe";
 import z from "zod";

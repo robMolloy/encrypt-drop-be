@@ -1,5 +1,5 @@
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../config/firebaseConfig";
+import { functions } from "../config/adminFirebaseConfig";
 import { z } from "zod";
 
 const isPaymentIntentStatusSucceededFn = httpsCallable(
