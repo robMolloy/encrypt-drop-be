@@ -2,7 +2,7 @@ import { createStripePaymentIntent } from "./createStripePaymentIntentSdkFunctio
 import { helloWorld } from "./helloWorldSdkFunction";
 import { isPaymentIntentStatusSucceeded } from "./isPaymentIntentStatusSucceededSdkFunction";
 
-export const sdk = {
+export const firebaseFunctionsSdk = {
   createStripePaymentIntent,
   helloWorld,
   isPaymentIntentStatusSucceeded,

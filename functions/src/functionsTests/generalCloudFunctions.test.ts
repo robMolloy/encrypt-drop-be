@@ -1,13 +1,13 @@
-import { sdk } from "../functionsSdk";
+import { firebaseFunctionsSdk } from "../firebaseFunctionsSdk";
 
 describe("firestore rules for a randomCollection", () => {
   it("should test that the hello world cloud function exists", async () => {
-    const result2 = await sdk.helloWorld();
+    const result2 = await firebaseFunctionsSdk.helloWorld();
     expect(result2.success).toBe(true);
     expect(result2.data).toBe("Hello from Firebase!");
   });
   it("should test that the stripe payment intent cloud function exists", async () => {
-    const result = await sdk.createStripePaymentIntent({
+    const result = await firebaseFunctionsSdk.createStripePaymentIntent({
       amount: 100,
       currency: "USD",
     });
