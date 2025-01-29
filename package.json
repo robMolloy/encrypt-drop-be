@@ -1,19 +1,16 @@
 {
-  "name": "firebase-data-modelling",
+  "name": "firebase-functions-playground",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "tsc": "tsc --noemit --watch",
-    "list-functions": "node scripts/script.js \"$(firebase functions:list --json)\"",
     "firebase:login": "node_modules/.bin/firebase login",
     "firebase:init": "node_modules/.bin/firebase init",
-    "functions:build": "cd functions && npm run build:watch",
-    "firebase:emulator": "node_modules/.bin/firebase emulators:start --project demo-project  --only auth,firestore,storage,functions",
-    "firebase:emulator:export-on-exit": "node_modules/.bin/firebase emulators:start --project demo-project --export-on-exit=\"./caches/history/$(date +%Y-%m-%d+%H:%M:%S)\" --only auth,firestore,functions,storage",
-    "firebase:emulator:cache": "node_modules/.bin/firebase emulators:start --project demo-project --import=\"./caches/seeds/seed1\" --export-on-exit=\"./caches/history/$(date +%Y-%m-%d+%H:%M:%S)\" --project demo-project  --only auth,firestore,functions,storage",
+    "functions:build": "cd firebase/functions && npm run build:watch",
+    "firebase:emulator": "node_modules/.bin/firebase emulators:start --project demo-project --only auth,firestore,functions,storage",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll --detectOpenHandles",
-    "dev1": "npm run firebase:emulator:cache",
+    "dev1": "npm run firebase:emulator",
     "dev2": "npm run functions:build",
     "dev3": "npm run tsc",
     "dev4": "npm run test:watch"
@@ -29,6 +26,7 @@
   "dependencies": {
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.2.0",
+    "uuid": "^11.0.5",
     "zod": "^3.24.1"
   }
 }

@@ -8,10 +8,12 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "skipLibCheck": true,
-    "target": "es2017"
+    "target": "es2017",
+    "paths": {
+      "@/*": ["./tests/*"]
+    }
   },
   "compileOnSave": true,
-  "include": ["functions/src"],
-  "exclude": ["functions/node_modules"]
+  "include": ["tests"],
+  "exclude": ["node_modules"]
 }
