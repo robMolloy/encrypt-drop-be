@@ -24,11 +24,9 @@ export const isPaymentIntentStatusSucceeded = onCall(async (request) => {
     const paymentIntentId = requestParseResponse.data.data.paymentIntentId;
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    const paymentIntentParseResponse =
-      paymentIntentSchema.safeParse(paymentIntent);
+    const paymentIntentParseResponse = paymentIntentSchema.safeParse(paymentIntent);
     const success =
-      paymentIntentParseResponse.success &&
-      paymentIntentParseResponse.data.status === "succeeded";
+      paymentIntentParseResponse.success && paymentIntentParseResponse.data.status === "succeeded";
     return { success };
   } catch (e) {
     const error = e as { message: string };

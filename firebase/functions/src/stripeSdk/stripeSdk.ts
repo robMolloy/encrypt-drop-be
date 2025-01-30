@@ -14,12 +14,9 @@ const paymentIntentSchema = z.object({
 
 const retrievePaymentIntent = async (p: { paymentIntentId: string }) => {
   try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(
-      p.paymentIntentId
-    );
+    const paymentIntent = await stripe.paymentIntents.retrieve(p.paymentIntentId);
 
-    const paymentIntentParseResponse =
-      paymentIntentSchema.safeParse(paymentIntent);
+    const paymentIntentParseResponse = paymentIntentSchema.safeParse(paymentIntent);
     return paymentIntentParseResponse;
   } catch (e) {
     const error = e as { message: string };

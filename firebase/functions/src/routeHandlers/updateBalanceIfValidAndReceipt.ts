@@ -53,8 +53,7 @@ export const updateBalanceIfValidAndReceipt = async (p: {
     admin,
     data: {
       ...getBalanceResponse.data,
-      numberOfCoupons:
-        getBalanceResponse.data.numberOfCoupons + paymentIntent.amount,
+      numberOfCoupons: getBalanceResponse.data.numberOfCoupons + paymentIntent.amount,
       couponStream: getBalanceResponse.data.couponStream + 1,
     },
   });
@@ -62,11 +61,10 @@ export const updateBalanceIfValidAndReceipt = async (p: {
   if (!setBalanceResponse.success)
     return { success: false, error: { message: "setBalanceResponse failed" } };
 
-  const setProcessedPaymentResponse =
-    await adminSetProcessedPaymentFromPaymentIntent({
-      admin,
-      data: getPaymentIntentDocResponse.data,
-    });
+  const setProcessedPaymentResponse = await adminSetProcessedPaymentFromPaymentIntent({
+    admin,
+    data: getPaymentIntentDocResponse.data,
+  });
 
   if (!setProcessedPaymentResponse.success)
     return { success: false, error: { message: "setProcessedPayment failed" } };

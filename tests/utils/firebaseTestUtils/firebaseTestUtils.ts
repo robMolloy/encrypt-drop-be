@@ -3,12 +3,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment,
 } from "@firebase/rules-unit-testing";
-import {
-  DocumentData,
-  DocumentSnapshot,
-  QuerySnapshot,
-  setLogLevel,
-} from "firebase/firestore";
+import { DocumentData, DocumentSnapshot, QuerySnapshot, setLogLevel } from "firebase/firestore";
 import { readFileSync } from "fs";
 import path from "path";
 
@@ -36,9 +31,7 @@ export async function expectPermissionDenied(
     const hasFailed = await (async () => {
       try {
         const errorResult = await assertFails(promise);
-        return ["permission-denied", "PERMISSION_DENIED"].includes(
-          errorResult.code
-        );
+        return ["permission-denied", "PERMISSION_DENIED"].includes(errorResult.code);
       } catch (error) {
         return false;
       }
@@ -54,10 +47,7 @@ export async function expectPermissionDenied(
 export async function isRequestDenied(promise: Promise<unknown>) {
   try {
     const errorResult = await assertFails(promise);
-    const permissionDenied = [
-      "permission-denied",
-      "PERMISSION_DENIED",
-    ].includes(errorResult.code);
+    const permissionDenied = ["permission-denied", "PERMISSION_DENIED"].includes(errorResult.code);
 
     return {
       permissionDenied,

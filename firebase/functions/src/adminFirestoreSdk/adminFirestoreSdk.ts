@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 import z from "zod";
+import { TSuccessOrFail } from "../utils/devUtils";
 
 type TTimestamp = ReturnType<typeof Timestamp.now>;
 type TTimestampValue = Pick<TTimestamp, "seconds" | "nanoseconds">;
@@ -32,16 +33,9 @@ export const balanceSchema = z.object({
   updatedAt: timestampSchema,
 });
 
-export const adminGetBalanceByUid = async (p: {
-  admin: typeof admin;
-  uid: string;
-}) => {
+export const adminGetBalanceByUid = async (p: { admin: typeof admin; uid: string }) => {
   try {
-    const initBalance = await p.admin
-      .firestore()
-      .collection("balances")
-      .doc(p.uid)
-      .get();
+    const initBalance = await p.admin.firestore().collection("balances").doc(p.uid).get();
 
     const balanceResponse = balanceSchema.safeParse(initBalance.data());
     return balanceResponse;
@@ -84,7 +78,7 @@ export const adminSetProcessedPaymentFromPaymentIntent = async (p: {
 export const adminGetProcessedPayment = async (p: {
   admin: typeof admin;
   id: string;
-}) => {
+}): Promise<TSuccessOrFail<z.infer<typeof paymentProcessedDocSchema>>> => {
   try {
     const getProcessedPaymentResponse = await p.admin
       .firestore()
@@ -97,27 +91,24 @@ export const adminGetProcessedPayment = async (p: {
     );
 
     return processedPaymentResponse;
-  } catch (error) {
-    return { success: false } as const;
+  } catch (e) {
+    const error = e as { message: string };
+    return { success: false, error } as const;
   }
 };
+
 export const adminGetPaymentIntentDoc = async (p: {
   admin: typeof admin;
   id: string;
-}) => {
+}): Promise<TSuccessOrFail<z.infer<typeof paymentIntentDocSchema>>> => {
   try {
-    const getDocResponse = await p.admin
-      .firestore()
-      .collection("paymentIntents")
-      .doc(p.id)
-      .get();
+    const getDocResponse = await p.admin.firestore().collection("paymentIntents").doc(p.id).get();
 
-    const parsedDocResponse = paymentIntentDocSchema.safeParse(
-      getDocResponse.data()
-    );
+    const parsedDocResponse = paymentIntentDocSchema.safeParse(getDocResponse.data());
 
     return parsedDocResponse;
-  } catch (error) {
-    return { success: false } as const;
+  } catch (e) {
+    const error = e as { message: string };
+    return { success: false, error } as const;
   }
 };

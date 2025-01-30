@@ -54,9 +54,7 @@ describe("firestore rules for a randomCollection", () => {
     const isAllDenied = results.every((x) => x.permissionDenied);
     if (isAllDenied) return;
 
-    throw new Error(
-      `permission granted to setDoc on ${randomCollectionName} but should not be`
-    );
+    throw new Error(`permission granted to setDoc on ${randomCollectionName} but should not be`);
   });
 
   it("should not allow update access to a random collection", async () => {
@@ -70,13 +68,9 @@ describe("firestore rules for a randomCollection", () => {
 
     const promises = [
       fbTestUtils.isRequestGranted(setDoc(docRef, { some: "data2" })),
-      fbTestUtils.isRequestGranted(
-        setDoc(docRef, { more: "data" }, { merge: true })
-      ),
+      fbTestUtils.isRequestGranted(setDoc(docRef, { more: "data" }, { merge: true })),
       fbTestUtils.isRequestDenied(setDoc(docRef, { some: "data2" })),
-      fbTestUtils.isRequestDenied(
-        setDoc(docRef, { more: "data" }, { merge: true })
-      ),
+      fbTestUtils.isRequestDenied(setDoc(docRef, { more: "data" }, { merge: true })),
     ];
     const results = await Promise.all(promises);
     const isAllDenied = results.every((x) => x.permissionDenied);
@@ -104,8 +98,6 @@ describe("firestore rules for a randomCollection", () => {
     const isAllDenied = results.every((x) => x.permissionDenied);
     if (isAllDenied) return;
 
-    throw new Error(
-      `permission granted to deleteDoc on ${randomCollectionName} but should not be`
-    );
+    throw new Error(`permission granted to deleteDoc on ${randomCollectionName} but should not be`);
   });
 });

@@ -11,8 +11,7 @@ export const createStripePaymentIntent = onCall(async (initRequest) => {
   const data = initRequest.data;
   const requestParseResponse = requestDataSchema.safeParse(data);
   if (!requestParseResponse.success) {
-    const errorMessage =
-      "The function must be called with 'amount' and 'currency' arguments.";
+    const errorMessage = "The function must be called with 'amount' and 'currency' arguments.";
     return { success: false, error: { message: errorMessage } };
   }
 
