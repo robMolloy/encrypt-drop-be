@@ -1,6 +1,5 @@
 import { Stripe } from "stripe";
 import z from "zod";
-import { logger } from "firebase-functions";
 
 const stripeSecretKey =
   "sk_test_51QhH4nIGFJRyk0RhUnRTVsXZICgwBLG5C6tiDecTJNR5MC40Skm1y3HMQt0HQA0dEdReAcEH3v2TozuJ9mlLHBQM00d3N3noeZ";
@@ -18,8 +17,6 @@ const retrievePaymentIntent = async (p: { paymentIntentId: string }) => {
     const paymentIntent = await stripe.paymentIntents.retrieve(
       p.paymentIntentId
     );
-
-    logger.info(`stripeUtils.ts:${/*LL*/ 19}`, { paymentIntent });
 
     const paymentIntentParseResponse =
       paymentIntentSchema.safeParse(paymentIntent);
