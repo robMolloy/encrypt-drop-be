@@ -1,7 +1,7 @@
 import { httpsCallable } from "@firebase/functions";
 import z from "zod";
 import { functions } from "../config/firebaseInitialisations";
-import { success } from "@/utils/devUtils";
+import { fail, success } from "@/utils/devUtils";
 
 const createStripePaymentIntentAndDocFn = httpsCallable(
   functions,

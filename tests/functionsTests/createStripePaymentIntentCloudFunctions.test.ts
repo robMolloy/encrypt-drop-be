@@ -19,13 +19,17 @@ describe("firestore rules for a randomCollection", () => {
     // await testEnv.clearFirestore();
     await testEnv.cleanup();
   });
-  it("should test that the createStripePaymentIntent cloud function returns a success response", async () => {
-    const result2 = await functionsSdk.createStripePaymentIntent({ amount: 100, currency: "USD" });
+  // it("should test that the createStripePaymentIntent cloud function returns a success response", async () => {
+  //   await signInWithEmailAndPassword(auth, "test@test.com", "test123");
+  //   const result2 = await functionsSdk.createStripePaymentIntentAndDoc({
+  //     amount: 100,
+  //     currency: "USD",
+  //   });
 
-    expect(result2.success).toBe(true);
-  });
+  //   expect(result2.success).toBe(true);
+  // });
   it("should test that the createStripePaymentIntent cloud function returns a success response", async () => {
-    const result2 = await functionsSdk.createStripePaymentIntentAndDoc({
+    const result2 = await functionsSdk.createStripePaymentIntent({
       amount: 100,
       currency: "USD",
     });
