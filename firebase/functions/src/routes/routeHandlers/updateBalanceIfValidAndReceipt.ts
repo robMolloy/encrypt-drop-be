@@ -1,55 +1,44 @@
 import admin from "firebase-admin";
-import {
-  adminGetBalanceByUid,
-  adminGetPaymentIntentDoc,
-  adminGetProcessedPayment,
-  adminSetBalance,
-  adminSetProcessedPaymentFromPaymentIntent,
-} from "../../adminFirestoreSdk/adminFirestoreSdk";
+import { adminFirestoreSdk } from "../../adminFirestoreSdk/adminFirestoreSdk";
 import { stripeSdk } from "../../stripeSdk/stripeSdk";
+import { fail } from "../../utils/devUtils";
 
 export const updateBalanceIfValidAndReceipt = async (p: {
   admin: typeof admin;
   paymentIntentId: string;
 }) => {
-  const getPaymentIntentDocResponse = await adminGetPaymentIntentDoc({
+  const getPaymentIntentDocResponse = await adminFirestoreSdk.getPaymentIntentDoc({
     admin,
     id: p.paymentIntentId,
   });
   if (!getPaymentIntentDocResponse.success)
-    return {
-      success: false,
-      error: { message: "getPaymentIntentDocResponse failed" },
-    };
+    return fail({ error: { message: "getPaymentIntentDocResponse failed" } });
 
   const stripePaymentIntentResponse = await stripeSdk.retrievePaymentIntent({
     paymentIntentId: p.paymentIntentId,
   });
   if (!stripePaymentIntentResponse.success)
-    return {
-      success: false,
-      error: { message: "stripePaymentIntentResponse failed" },
-    };
+    return fail({ error: { message: "stripePaymentIntentResponse failed" } });
 
   const paymentIntent = stripePaymentIntentResponse.data;
   if (paymentIntent.status !== "succeeded")
     return { success: false, error: { message: "payment has not succeeded" } };
 
-  const getProcessedPaymentResponse = await adminGetProcessedPayment({
+  const getProcessedPaymentResponse = await adminFirestoreSdk.getProcessedPayment({
     admin,
     id: p.paymentIntentId,
   });
   if (getProcessedPaymentResponse.success)
     return { success: false, error: { message: "getProcessedPayment failed" } };
 
-  const getBalanceResponse = await adminGetBalanceByUid({
+  const getBalanceResponse = await adminFirestoreSdk.getBalanceByUid({
     admin,
     uid: getPaymentIntentDocResponse.data.uid,
   });
   if (!getBalanceResponse.success)
     return { success: false, error: { message: "getBalanceResponse failed" } };
 
-  const setBalanceResponse = await adminSetBalance({
+  const setBalanceResponse = await adminFirestoreSdk.setBalance({
     admin,
     data: {
       ...getBalanceResponse.data,
@@ -61,7 +50,7 @@ export const updateBalanceIfValidAndReceipt = async (p: {
   if (!setBalanceResponse.success)
     return { success: false, error: { message: "setBalanceResponse failed" } };
 
-  const setProcessedPaymentResponse = await adminSetProcessedPaymentFromPaymentIntent({
+  const setProcessedPaymentResponse = await adminFirestoreSdk.setProcessedPaymentFromPaymentIntent({
     admin,
     data: getPaymentIntentDocResponse.data,
   });

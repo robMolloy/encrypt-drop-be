@@ -1,39 +1,13 @@
 import admin from "firebase-admin";
-import { Timestamp } from "firebase-admin/firestore";
 import z from "zod";
 import { TSuccessOrFail } from "../utils/devUtils";
+import {
+  balanceSchema,
+  paymentIntentDocSchema,
+  paymentProcessedDocSchema,
+} from "./adminFirestoreUtils";
 
-type TTimestamp = ReturnType<typeof Timestamp.now>;
-type TTimestampValue = Pick<TTimestamp, "seconds" | "nanoseconds">;
-
-const getTimestampFromTimestampValue = (x: TTimestampValue) => {
-  return new Timestamp(x.seconds, x.nanoseconds);
-};
-
-export const timestampSchema = z
-  .object({ seconds: z.number(), nanoseconds: z.number() })
-  .transform((x) => getTimestampFromTimestampValue(x));
-
-export const paymentIntentDocSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});
-export const paymentProcessedDocSchema = paymentIntentDocSchema.extend({
-  processedAt: timestampSchema,
-});
-
-export const balanceSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  couponStream: z.number(),
-  numberOfCoupons: z.number(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});
-
-export const adminGetBalanceByUid = async (p: { admin: typeof admin; uid: string }) => {
+const getBalanceByUid = async (p: { admin: typeof admin; uid: string }) => {
   try {
     const initBalance = await p.admin.firestore().collection("balances").doc(p.uid).get();
 
@@ -44,10 +18,7 @@ export const adminGetBalanceByUid = async (p: { admin: typeof admin; uid: string
   }
 };
 
-export const adminSetBalance = async (p: {
-  admin: typeof admin;
-  data: z.infer<typeof balanceSchema>;
-}) => {
+const setBalance = async (p: { admin: typeof admin; data: z.infer<typeof balanceSchema> }) => {
   try {
     await p.admin.firestore().collection("balances").doc(p.data.id).set(p.data);
     return { success: true } as const;
@@ -56,7 +27,7 @@ export const adminSetBalance = async (p: {
   }
 };
 
-export const adminSetProcessedPaymentFromPaymentIntent = async (p: {
+const setProcessedPaymentFromPaymentIntent = async (p: {
   admin: typeof admin;
   data: z.infer<typeof paymentIntentDocSchema>;
 }) => {
@@ -75,7 +46,7 @@ export const adminSetProcessedPaymentFromPaymentIntent = async (p: {
   }
 };
 
-export const adminGetProcessedPayment = async (p: {
+const getProcessedPayment = async (p: {
   admin: typeof admin;
   id: string;
 }): Promise<TSuccessOrFail<z.infer<typeof paymentProcessedDocSchema>>> => {
@@ -97,7 +68,7 @@ export const adminGetProcessedPayment = async (p: {
   }
 };
 
-export const adminGetPaymentIntentDoc = async (p: {
+const getPaymentIntentDoc = async (p: {
   admin: typeof admin;
   id: string;
 }): Promise<TSuccessOrFail<z.infer<typeof paymentIntentDocSchema>>> => {
@@ -111,4 +82,12 @@ export const adminGetPaymentIntentDoc = async (p: {
     const error = e as { message: string };
     return { success: false, error } as const;
   }
+};
+
+export const adminFirestoreSdk = {
+  getPaymentIntentDoc,
+  setProcessedPaymentFromPaymentIntent,
+  getBalanceByUid,
+  getProcessedPayment,
+  setBalance,
 };
