@@ -16,27 +16,38 @@ export const updateBalanceIfValidAndReceipt = async (p: {
     admin,
     id: p.paymentIntentId,
   });
-  if (!getPaymentIntentDocResponse.success) return { success: false };
+  if (!getPaymentIntentDocResponse.success)
+    return {
+      success: false,
+      error: { message: "getPaymentIntentDocResponse failed" },
+    };
 
   const stripePaymentIntentResponse = await stripeSdk.retrievePaymentIntent({
     paymentIntentId: p.paymentIntentId,
   });
-  if (!stripePaymentIntentResponse.success) return { success: false };
+  if (!stripePaymentIntentResponse.success)
+    return {
+      success: false,
+      error: { message: "stripePaymentIntentResponse failed" },
+    };
 
   const paymentIntent = stripePaymentIntentResponse.data;
-  if (paymentIntent.status !== "succeeded") return { success: false };
+  if (paymentIntent.status !== "succeeded")
+    return { success: false, error: { message: "payment has not succeeded" } };
 
   const getProcessedPaymentResponse = await adminGetProcessedPayment({
     admin,
     id: p.paymentIntentId,
   });
-  if (getProcessedPaymentResponse.success) return { success: false };
+  if (getProcessedPaymentResponse.success)
+    return { success: false, error: { message: "getProcessedPayment failed" } };
 
   const getBalanceResponse = await adminGetBalanceByUid({
     admin,
     uid: getPaymentIntentDocResponse.data.uid,
   });
-  if (!getBalanceResponse.success) return { success: false };
+  if (!getBalanceResponse.success)
+    return { success: false, error: { message: "getBalanceResponse failed" } };
 
   const setBalanceResponse = await adminSetBalance({
     admin,
@@ -48,13 +59,17 @@ export const updateBalanceIfValidAndReceipt = async (p: {
     },
   });
 
-  if (!setBalanceResponse.success) return { success: false };
+  if (!setBalanceResponse.success)
+    return { success: false, error: { message: "setBalanceResponse failed" } };
 
   const setProcessedPaymentResponse =
     await adminSetProcessedPaymentFromPaymentIntent({
       admin,
       data: getPaymentIntentDocResponse.data,
     });
+
+  if (!setProcessedPaymentResponse.success)
+    return { success: false, error: { message: "setProcessedPayment failed" } };
 
   return { success: setProcessedPaymentResponse.success };
 };
