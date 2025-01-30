@@ -5,8 +5,8 @@ import {
   adminGetProcessedPayment,
   adminSetBalance,
   adminSetProcessedPaymentFromPaymentIntent,
-} from "../adminFirestoreSdk/adminFirestoreSdk";
-import { stripeSdk } from "../stripeSdk/stripeSdk";
+} from "../../adminFirestoreSdk/adminFirestoreSdk";
+import { stripeSdk } from "../../stripeSdk/stripeSdk";
 
 export const updateBalanceIfValidAndReceipt = async (p: {
   admin: typeof admin;

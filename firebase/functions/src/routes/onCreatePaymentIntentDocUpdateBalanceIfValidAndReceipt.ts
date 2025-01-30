@@ -1,6 +1,6 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { admin } from "../config/adminFirebaseInitialisations";
-import { updateBalanceIfValidAndReceipt } from "../routeHandlers/updateBalanceIfValidAndReceipt";
+import { updateBalanceIfValidAndReceipt } from "./routeHandlers/updateBalanceIfValidAndReceipt";
 
 export const onCreatePaymentIntentDocUpdateBalanceIfValidAndReceipt = onDocumentCreated(
   "paymentIntents/{id}",
