@@ -1,5 +1,6 @@
 import { Stripe } from "stripe";
 import z from "zod";
+import { TSuccessOrFail } from "../utils/devUtils";
 
 const stripeSecretKey =
   "sk_test_51QhH4nIGFJRyk0RhUnRTVsXZICgwBLG5C6tiDecTJNR5MC40Skm1y3HMQt0HQA0dEdReAcEH3v2TozuJ9mlLHBQM00d3N3noeZ";
@@ -12,7 +13,9 @@ const paymentIntentSchema = z.object({
   client_secret: z.string(),
 });
 
-const retrievePaymentIntent = async (p: { paymentIntentId: string }) => {
+const retrievePaymentIntent = async (p: {
+  paymentIntentId: string;
+}): Promise<TSuccessOrFail<z.infer<typeof paymentIntentSchema>>> => {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(p.paymentIntentId);
 
@@ -23,7 +26,10 @@ const retrievePaymentIntent = async (p: { paymentIntentId: string }) => {
     return { success: false, error } as const;
   }
 };
-const createPaymentIntent = async (p: { amount: number; currency: string }) => {
+const createPaymentIntent = async (p: {
+  amount: number;
+  currency: string;
+}): Promise<TSuccessOrFail<z.infer<typeof paymentIntentSchema>>> => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: p.amount,

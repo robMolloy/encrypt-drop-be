@@ -7,13 +7,10 @@ const requestDataSchema = z.object({
   currency: z.string(),
 });
 
-export const createStripePaymentIntent = onCall(async (initRequest) => {
-  const data = initRequest.data;
-  const requestParseResponse = requestDataSchema.safeParse(data);
-  if (!requestParseResponse.success) {
-    const errorMessage = "The function must be called with 'amount' and 'currency' arguments.";
-    return { success: false, error: { message: errorMessage } };
-  }
+export const createStripePaymentIntent = onCall(async (request) => {
+  const requestParseResponse = requestDataSchema.safeParse(request.data);
+  if (!requestParseResponse.success)
+    return fail({ message: "The function must be called with 'amount' and 'currency' arguments." });
 
   return stripeSdk.createPaymentIntent({
     amount: requestParseResponse.data.amount,
