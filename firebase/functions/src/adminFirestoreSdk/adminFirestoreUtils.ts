@@ -15,6 +15,8 @@ export const timestampSchema = z
 export const paymentIntentDocSchema = z.object({
   id: z.string(),
   uid: z.string(),
+  amount: z.number(),
+  currency: z.string(),
   createdAt: timestampSchema,
   updatedAt: timestampSchema,
 });

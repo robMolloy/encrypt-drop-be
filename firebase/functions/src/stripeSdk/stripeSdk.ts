@@ -7,6 +7,7 @@ const stripeSecretKey =
 const stripe = new Stripe(stripeSecretKey);
 
 const paymentIntentSchema = z.object({
+  id: z.string(),
   amount: z.number(),
   currency: z.literal("usd"),
   status: z.string(),
@@ -19,11 +20,10 @@ const retrievePaymentIntent = async (p: {
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(p.paymentIntentId);
 
-    const paymentIntentParseResponse = paymentIntentSchema.safeParse(paymentIntent);
-    return paymentIntentParseResponse;
+    return paymentIntentSchema.safeParse(paymentIntent);
   } catch (e) {
     const error = e as { message: string };
-    return { success: false, error } as const;
+    return fail({ error });
   }
 };
 const createPaymentIntent = async (p: {
@@ -39,7 +39,7 @@ const createPaymentIntent = async (p: {
     return paymentIntentSchema.safeParse(paymentIntent);
   } catch (e) {
     const error = e as { message: string };
-    return { success: false, error } as const;
+    return fail({ error });
   }
 };
 

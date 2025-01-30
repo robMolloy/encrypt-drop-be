@@ -28,6 +28,23 @@ const setBalance = async (p: { admin: typeof admin; data: z.infer<typeof balance
   }
 };
 
+const setPaymentIntentDoc = async (p: {
+  admin: typeof admin;
+  data: z.infer<typeof paymentIntentDocSchema>;
+}) => {
+  try {
+    await p.admin
+      .firestore()
+      .collection("paymentIntents")
+      .doc(p.data.id)
+      .set({ ...p.data });
+    return success({ data: undefined });
+  } catch (e) {
+    const error = e as { message: string };
+    return fail({ error });
+  }
+};
+
 const setProcessedPaymentFromPaymentIntent = async (p: {
   admin: typeof admin;
   data: z.infer<typeof paymentIntentDocSchema>;
@@ -90,4 +107,5 @@ export const adminFirestoreSdk = {
   getBalanceByUid,
   getProcessedPayment,
   setBalance,
+  setPaymentIntentDoc,
 };
