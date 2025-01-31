@@ -1,6 +1,6 @@
 import { Stripe } from "stripe";
 import z from "zod";
-import { TSuccessOrFail } from "../utils/devUtils";
+import { fail, TSuccessOrFail } from "../utils/devUtils";
 
 const stripeSecretKey =
   "sk_test_51QhH4nIGFJRyk0RhUnRTVsXZICgwBLG5C6tiDecTJNR5MC40Skm1y3HMQt0HQA0dEdReAcEH3v2TozuJ9mlLHBQM00d3N3noeZ";
