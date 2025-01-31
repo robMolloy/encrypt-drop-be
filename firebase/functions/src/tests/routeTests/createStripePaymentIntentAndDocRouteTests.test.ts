@@ -6,6 +6,7 @@ import { stripeSdk } from "../../stripeSdk/stripeSdk";
 import { fbTestUtils } from "../firebaseTestUtils";
 import { admin } from "../../config/adminFirebaseInitialisations";
 import { createStripePaymentIntentAndDocRouteHandler } from "../../routes/routeHandlers/createStripePaymentIntentAndDocRouteHandler.ts";
+import { adminFirestoreSdk } from "../../adminFirestoreSdk/adminFirestoreSdk";
 
 let testEnv: RulesTestEnvironment;
 
@@ -42,7 +43,7 @@ describe("createStripePaymentIntentAndDocRouteTests", () => {
     expect(result.data.amount).toBe(amount);
     expect(result.data.currency.toLowerCase()).toBe(currency.toLowerCase());
     const paymentIntentResponse = await stripeSdk.retrievePaymentIntent({
-      paymentIntentId: result.data.id,
+      id: result.data.id,
     });
     expect(paymentIntentResponse.success).toBe(true);
     if (!paymentIntentResponse.success) return;
@@ -51,13 +52,33 @@ describe("createStripePaymentIntentAndDocRouteTests", () => {
     expect(paymentIntentResponse.data.currency.toLowerCase()).toBe(currency.toLowerCase());
   });
   it("should test that the createStripePaymentIntentRouteHandler returns a success response", async () => {
+    const amount = 300;
+    const currency = "USD";
+    const uid = "test123";
     const result = await createStripePaymentIntentAndDocRouteHandler({
-      admin: admin,
-      uid: "id123",
-      amount: 300,
-      currency: "USD",
+      admin,
+      uid,
+      amount,
+      currency,
     });
 
     expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.id).toBeDefined();
+
+    const paymentIntentResponse = await stripeSdk.retrievePaymentIntent({ id: result.data.id });
+    const paymentIntentDocResponse = await adminFirestoreSdk.getPaymentIntentDoc({
+      admin,
+      id: result.data.id,
+    });
+    expect(paymentIntentDocResponse.success && paymentIntentResponse.success).toBe(true);
+    if (!paymentIntentDocResponse.success || !paymentIntentResponse.success) return;
+
+    expect(paymentIntentDocResponse.data.id).toBeDefined();
+    expect(paymentIntentResponse.data.id).toBeDefined();
+    expect(paymentIntentResponse.data.id).toBe(paymentIntentDocResponse.data.id);
+
+    expect(paymentIntentResponse.data.amount).toBe(amount);
+    expect(paymentIntentResponse.data.currency.toLowerCase()).toBe(currency.toLowerCase());
   });
 });

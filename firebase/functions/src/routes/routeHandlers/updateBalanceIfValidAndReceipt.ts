@@ -15,7 +15,7 @@ export const updateBalanceIfValidAndReceipt = async (p: {
     return fail({ error: { message: "getPaymentIntentDocResponse failed" } });
 
   const stripePaymentIntentResponse = await stripeSdk.retrievePaymentIntent({
-    paymentIntentId: p.paymentIntentId,
+    id: p.paymentIntentId,
   });
   if (!stripePaymentIntentResponse.success)
     return fail({ error: { message: "stripePaymentIntentResponse failed" } });

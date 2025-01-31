@@ -15,10 +15,10 @@ const paymentIntentSchema = z.object({
 });
 
 const retrievePaymentIntent = async (p: {
-  paymentIntentId: string;
+  id: string;
 }): Promise<TSuccessOrFail<z.infer<typeof paymentIntentSchema>>> => {
   try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(p.paymentIntentId);
+    const paymentIntent = await stripe.paymentIntents.retrieve(p.id);
 
     return paymentIntentSchema.safeParse(paymentIntent);
   } catch (e) {
