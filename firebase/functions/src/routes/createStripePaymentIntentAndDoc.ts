@@ -4,7 +4,6 @@ import { admin } from "../config/adminFirebaseInitialisations";
 import { stripeSdk } from "../stripeSdk/stripeSdk";
 import { fail } from "../utils/devUtils";
 import { createStripePaymentIntentAndDocRouteHandler } from "./routeHandlers/createStripePaymentIntentAndDocRouteHandler.ts";
-import { logger } from "firebase-functions";
 
 const requestDataSchema = z.object({
   amount: z.number(),
@@ -12,7 +11,6 @@ const requestDataSchema = z.object({
 });
 
 export const createStripePaymentIntentAndDoc = onCall(async (request) => {
-  logger.info(`createStripePaymentIntentAndDoc.ts:${/*LL*/ 14} ${request.auth?.uid}`);
   const parseResponse = requestDataSchema.safeParse(request.data);
   if (!parseResponse.success)
     return fail({
