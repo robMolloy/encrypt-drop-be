@@ -1,11 +1,26 @@
 import admin from "firebase-admin";
 import z from "zod";
 import { fail, success, TSuccessOrFail } from "../utils/devUtils";
-import {
-  balanceSchema,
-  paymentIntentDocSchema,
-  paymentProcessedDocSchema,
-} from "./adminFirestoreUtils";
+import { timestampSchema } from "./adminFirestoreUtils";
+
+export const paymentIntentDocSchema = z.object({
+  id: z.string(),
+  uid: z.string(),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema,
+});
+export const paymentProcessedDocSchema = paymentIntentDocSchema.extend({
+  processedAt: timestampSchema,
+});
+
+export const balanceSchema = z.object({
+  id: z.string(),
+  uid: z.string(),
+  couponStream: z.number(),
+  numberOfCoupons: z.number(),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema,
+});
 
 const getBalanceByUid = async (p: { admin: typeof admin; uid: string }) => {
   try {

@@ -11,24 +11,3 @@ const getTimestampFromTimestampValue = (x: TTimestampValue) => {
 export const timestampSchema = z
   .object({ seconds: z.number(), nanoseconds: z.number() })
   .transform((x) => getTimestampFromTimestampValue(x));
-
-export const paymentIntentDocSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  amount: z.number(),
-  currency: z.string(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});
-export const paymentProcessedDocSchema = paymentIntentDocSchema.extend({
-  processedAt: timestampSchema,
-});
-
-export const balanceSchema = z.object({
-  id: z.string(),
-  uid: z.string(),
-  couponStream: z.number(),
-  numberOfCoupons: z.number(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-});

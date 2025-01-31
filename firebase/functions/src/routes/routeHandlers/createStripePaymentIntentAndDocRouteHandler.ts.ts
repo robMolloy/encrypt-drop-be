@@ -21,8 +21,6 @@ export const createStripePaymentIntentAndDocRouteHandler = async (p: {
     admin,
     data: {
       id: createPaymentIntentResponse.data.id,
-      amount: p.amount,
-      currency: p.currency,
       uid: p.uid,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
